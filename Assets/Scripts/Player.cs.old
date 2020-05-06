@@ -1,0 +1,100 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Player : MonoBehaviour
+{
+    [SerializeField]
+    private float _speed = 3.5f;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        //set the current position to new position (0,0,0)  
+        transform.position = new Vector3(0, 0, 0);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        CalculateMovement();   
+    }
+
+    /*
+     * Method to calculate the player's movement
+     */
+     void CalculateMovement()
+    {
+        /*
+        * Allows user to use the keyboard to move a GameObject
+        * by accessing the Input Horizontal Axis
+        */
+        float horizonatalInput = Input.GetAxis("Horizontal");
+
+        /*
+         * Allows user to use the keyboard to move a GameObject
+         * by accessing the Input Vertical Axis
+         */
+        float verticalInput = Input.GetAxis("Vertical");
+
+        /* 
+         * Time.deltatime allow us to use real time
+         * it basically converts unity units to real time units.
+         * 1 Unity unit = 1 meter so with Time.deltatime
+         * we go from 60 units per frame to 1 meter per second
+         */
+        /*
+         * Vector3.right is the same as Vector3(1,0,0)
+         */
+        /*
+         * Horizontal movement
+         */
+        transform.Translate(Vector3.right * horizonatalInput * _speed * Time.deltaTime);
+
+        /*
+         *  Vertical movement
+         */
+        transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
+
+        /*
+         * A bit optimised solution would have been to use 
+         * a new Vector3 declaration inside the transform.Translate
+         * as follow:
+         * 
+         * transform.Translate(new Vector3(horizonatalInput,verticalInput,0) * _speed * Time.deltaTime)
+         */
+
+        // if player position in the y is greater than 0
+        // y position = 0
+        // else if position on the y is lass than -3.8F
+        float upperBound = 0f;
+        float lowerBound = -3.8f;
+        /*
+        if (transform.position.y >= upperBound)
+        {
+            transform.position = new Vector3(transform.position.x, upperBound, 0);
+        }
+        else if (transform.position.y <= lowerBound)
+        {
+            transform.position = new Vector3(transform.position.x, lowerBound, 0);
+        }
+        */
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, lowerBound, upperBound), 0);                          
+
+        // if palyer on the x > 11
+        // x pos = -11
+        // else if player on the x is less than 11
+        // xpos = 11
+
+        float leftBound = -11f;
+        float rightBound = 11f;
+        if (transform.position.x > rightBound)
+        {
+            transform.position = new Vector3(leftBound, transform.position.y, 0);
+        }
+        else if (transform.position.x < leftBound)
+        {
+            transform.position = new Vector3(rightBound, transform.position.y, 0);
+        }
+    }
+}
